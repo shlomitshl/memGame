@@ -1,19 +1,33 @@
 package memo;
-
 import java.util.Scanner;
 public class Game  {
     public Board board;
     String[] names;
     int[] points;
-    int participants;
+    int participants,level;
+    boolean exceptionSign=true;
     public void startGame() {
         System.out.println("Please enter number of participants(1-4) :");
-        Scanner scan = new Scanner(System.in);
-        participants = scan.nextInt();
+        do {
+            try {
+                Scanner scan = new Scanner(System.in);
+                participants = scan.nextInt();
+                exceptionSign = false;
+            } catch (Exception e) {  //if the input was not an integer we are throwing an exception
+                System.out.println("This is not a number!");
+                System.out.println("Try again...");
+            }
+        }while(exceptionSign);
         while(participants<1||participants>4){   //checking legality of participants number
-            System.out.println("The number of Participant is illegal!");
-            System.out.println("please choose number of participants between 1-4");
-            participants = scan.nextInt();
+            //System.out.println("The number of Participant is illegal!");
+            System.out.println("you have to choose a number (1-4)");
+            try {
+                Scanner scan = new Scanner(System.in);
+                participants = scan.nextInt();
+            }
+            catch (Exception e){
+                System.out.println("This is not a number!");
+            }
         }
            names = new String[participants];
            points=new int[participants];
@@ -44,10 +58,21 @@ public class Game  {
             System.out.println();
         }
         System.out.print("Please enter the number of the level you want to play (1-3): ");
-        int level = scan.nextInt();
+        exceptionSign=true;
+        do {
+            try {
+                Scanner scan = new Scanner(System.in);
+                level = scan.nextInt();
+                exceptionSign = false;
+            } catch (Exception e) {
+                System.out.println("This is not a number!");
+                System.out.println("Try again...");
+            }
+        }while(exceptionSign);
         while (level>3||level<1) {
             System.out.println("Illegal input!");
             System.out.println("Please enter a number between 1-3");
+            Scanner scan = new Scanner(System.in);
             level = scan.nextInt();
         }
         if (level == 1) {
