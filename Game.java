@@ -5,11 +5,12 @@ public class Game  {
     String[] names;
     int[] points;
     int participants,level;
+    int row1,column1,row2,column2;
     boolean exceptionSign=true;
     public void startGame() {
-        System.out.println("Please enter number of participants(1-4) :");
         do {
             try {
+                System.out.println("Please enter number of participants(2-5) :");
                 Scanner scan = new Scanner(System.in);
                 participants = scan.nextInt();
                 exceptionSign = false;
@@ -17,28 +18,17 @@ public class Game  {
                 System.out.println("This is not a number!");
                 System.out.println("Try again...");
             }
-        }while(exceptionSign);
-        while(participants<1||participants>4){   //checking legality of participants number
-            //System.out.println("The number of Participant is illegal!");
-            System.out.println("you have to choose a number (1-4)");
-            try {
-                Scanner scan = new Scanner(System.in);
-                participants = scan.nextInt();
-            }
-            catch (Exception e){
-                System.out.println("This is not a number!");
-            }
-        }
-           names = new String[participants];
-           points=new int[participants];
+            //}while(exceptionSign);
+        }while(participants<2||participants>5||exceptionSign);   //checking legality of participants number
 
-           for (int i=0;i<participants;i++) {   //geting names of participants and saying Hellow
-                System.out.println("Participant " + (i + 1) + " Please enter your name:");
-                Scanner scan1 = new Scanner(System.in);
-                names[i] = scan1.nextLine();
+        names = new String[participants];
+        points= new int[participants];
 
-                System.out.println("Hellow " + names[i] + "!");
-                //System.out.println("points:"+points[i]);
+        for (int i=0;i<participants;i++) {   //geting names of participants and saying Hellow
+            System.out.println("Participant " + (i + 1) + " Please enter your name:");
+            Scanner scan1 = new Scanner(System.in);
+            names[i] = scan1.nextLine();
+            System.out.println("Hellow " + names[i] + "!");
         }
 
         System.out.print("For getting instructions press 'i' ,else press any key to get started...:");
@@ -57,68 +47,110 @@ public class Game  {
             System.out.println("The winner is the one who gained the most cards.");
             System.out.println();
         }
-        System.out.print("Please enter the number of the level you want to play (1-3): ");
+
         exceptionSign=true;
         do {
             try {
+                System.out.print("Please enter the number of the level you want to play (1-3): ");
                 Scanner scan = new Scanner(System.in);
                 level = scan.nextInt();
                 exceptionSign = false;
             } catch (Exception e) {
                 System.out.println("This is not a number!");
-                System.out.println("Try again...");
             }
-        }while(exceptionSign);
-        while (level>3||level<1) {
-            System.out.println("Illegal input!");
-            System.out.println("Please enter a number between 1-3");
-            Scanner scan = new Scanner(System.in);
-            level = scan.nextInt();
-        }
+        }while(level>3||level<1||exceptionSign);//When all 3 conditions are false we get out of the loop.
+
         if (level == 1) {
             System.out.println("Geting started...");
             board=new Board(4,4);
-            board.printBoard(4,4,-1,-1,-1,-1);
+            board.printBoard(-1,-1,-1,-1);
             playGame();
         } else if (level == 2) {
             System.out.println("Geting started...");
             board=new Board(6,6);
-            board.printBoard(6,6,-1,1,1,1);
+            board.printBoard(-1,1,1,1);
             playGame();
-        } else {
+        } else {//level==3
             System.out.println("Geting started...");
             board = new Board(10, 10);
-            board.printBoard(10, 10,-1,-1,-1,-1);
+            board.printBoard(-1,-1,-1,-1);
             playGame();
         }
     }
     public void playGame(){
         board.fillRandomNumbers();
-       // board.printBoard(board.numRows,board.numColumns,-2,1,1,1);
-        int row1,column1,row2,column2;
         int i=0;//The index of participant's name/points in the names/points array.
         boolean card2IsLegal;
-        Scanner scan = new Scanner(System.in);
+
         do {
             System.out.println(names[i] + " it is your turn.");
-            System.out.println("Please choose your first card.");
-            System.out.println("Enter row nunmber:");
-            row1 = scan.nextInt();
-            System.out.println("Enter column nunmber:");
-            column1 = scan.nextInt();
+            exceptionSign=true;
+            do{
+                try {
+                    System.out.println("Please choose your first card.");
+                    System.out.println("Enter row nunmber:");
+                    Scanner scan = new Scanner(System.in);
+                    row1 = scan.nextInt();
+                    if (row1 < 1 || row1 > board.numRows) {
+                        System.out.println("This number is out of range (range=1-"+board.numRows+")");
+                    }
+                    exceptionSign = false;
+                } catch (Exception e){
+                    System.out.println("This is not a number!");
+                }
+            }while (row1 < 1 || row1 > board.numRows || exceptionSign);
+            exceptionSign=true;
+            do {
+                try {
+                    System.out.println("Enter column nunmber:");
+                    Scanner scan = new Scanner(System.in);
+                    column1 = scan.nextInt();
+                    if (column1 < 1 || column1 > board.numColumns) {
+                        System.out.println("This number is out of range (range=1-"+board.numColumns+")");
+                    }
+                    exceptionSign = false;
+                }catch (Exception e){
+                    System.out.println("This is not a number!");
+                }
+            }while(column1 < 1 || column1 > board.numColumns || exceptionSign);
             if (!board.board[row1 - 1][column1 - 1].isTaken)
             {
-                board.printBoard(board.numRows, board.numColumns, -3, column1, row1 - 1, column1 - 1);
+                //Printing board shoing the first card that was chosen
+                board.printBoard(-3, column1, row1 - 1, column1 - 1);
                 do {
-                    System.out.println("Please choose your second card.");
-                    System.out.println("Enter row nunmber:");
-                    row2 = scan.nextInt();
-                    System.out.println("Enter column nunmber:");
-                    column2 = scan.nextInt();
+                    exceptionSign=true;
+                    do {
+                        try {
+                            System.out.println("Please choose your second card.");
+                            System.out.println("Enter row nunmber:");
+                            Scanner scan = new Scanner(System.in);
+                            row2 = scan.nextInt();
+                            if (row2 < 1 || row2 > board.numRows) {
+                                System.out.println("This number is out of range (range=1-" + board.numRows+")");
+                            }
+                            exceptionSign = false;
+                        } catch (Exception e) {
+                            System.out.println("This is not a number!");
+                        }
+                    }while(row2 < 1 || row2 > board.numRows || exceptionSign);
+                    exceptionSign=true;
+                    do {
+                        try {
+                            System.out.println("Enter column nunmber:");
+                            Scanner scan = new Scanner(System.in);
+                            column2 = scan.nextInt();
+                            if (column2 < 1 || column2 > board.numColumns) {
+                                System.out.println("This number is out of range (range=1-"+board.numColumns+")");
+                            }
+                            exceptionSign = false;
+                        }catch (Exception e){
+                            System.out.println("This is not a number!");
+                        }
+                    }while(column2 < 1 || column2 > board.numColumns ||exceptionSign);
                     if (!board.board[row2 - 1][column2 - 1].isTaken) {
                         if (!(row1 == row2 && column1 == column2)) {//cheking if it is not the same first choosen card
                             //prints board with only two choosen cards up.
-                            board.printBoard(board.numRows, board.numColumns, row1 - 1, column1 - 1, row2 - 1, column2 - 1);
+                            board.printBoard(row1 - 1, column1 - 1, row2 - 1, column2 - 1);
                             //checking if the chosen cards are equal
                             if (board.board[row1 - 1][column1 - 1].value == board.board[row2 - 1][column2 - 1].value) {
                                 points[i]++;
@@ -130,9 +162,15 @@ public class Game  {
                                     System.out.println(names[i] + " you have " + points[i] + " points.");
                             } else {
                                 System.out.println("Sorry...you don't have a couple");
-                                i++;//next participant turn
+                                i++;//next participants turn
                                 if (i == participants)//turn go's back to the first participant.
                                     i = 0;
+                                try {
+                                    Thread.sleep(10000);
+                                }
+                                catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
                             card2IsLegal=true;
                         }else {
@@ -150,7 +188,8 @@ public class Game  {
             {
                 System.out.println("This card was already taken");
             }
-            board.printBoard(board.numRows,board.numColumns,-1,-1,-1,-1);//prints board with 1's&0's
+
+            board.printBoard(-1,-1,-1,-1);//prints board with 1's&0's
                                                                                                    //means cards upside down.
         }while(!board.checkFinish());
         System.out.println("Game is over!");

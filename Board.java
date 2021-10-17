@@ -17,22 +17,22 @@ public class Board  {
     //if row1=-1 prints all the cards face down(all board is filld with zero's and one's)
     //if row1=-2 prints all the cards face up
     //if row1=-3 prints the first card that was chosen
-    public void printBoard(int rows,int columns,int row1,int column1,int row2,int column2){
-        //printing the upper line of the frame + the indexes of columns
-        if (rows==4) {
+    public void printBoard(int row1,int column1,int row2,int column2){
+        //printing the upper line of the frame + the indexes of numColumns
+        if (numRows==4) {
             System.out.println("  1   2   3   4");
             System.out.println(" -----------------");
         }
-        else if(rows==6) {
+        else if(numRows==6) {
             System.out.println("  1   2   3   4   5   6");
             System.out.println(" -------------------------");
         }
-        else if(rows==10) {
+        else if(numRows==10) {
             System.out.println("  1   2   3   4   5   6   7   8   9   10");
             System.out.println(" ------------------------------------------");
         }
-        for (int r=0;r<rows;r++) {
-            for (int c = 0; c < columns; c++) {
+        for (int r=0;r<numRows;r++) {
+            for (int c = 0; c < numColumns; c++) {
                 switch (row1) {
                     case (-1): //prints board with cards face down(0's:card was'nt taken yet, 1's:card was already taken)
                         if (c == 0)
@@ -41,7 +41,7 @@ public class Board  {
                             System.out.print(1 + "   ");
                         else
                             System.out.print(0 + "   ");
-                        if (c == columns - 1) {  //It meens that we are in the last column
+                        if (c == numColumns - 1) {  //It meens that we are in the last column
                             System.out.print("| ");
                             System.out.println(r+1);
                         }
@@ -53,7 +53,7 @@ public class Board  {
                             System.out.print(board[r][c].value + "  ");
                         else
                             System.out.print(board[r][c].value + "   ");//bigger spase is needed
-                        if (c == columns - 1) { //It meens that we are in the last column
+                        if (c == numColumns - 1) { //It meens that we are in the last column
                             System.out.print("| ");
                             System.out.println(r+1);
                         }
@@ -73,7 +73,7 @@ public class Board  {
                             else
                                 System.out.print(0 + "   ");
                         }
-                        if (c==columns - 1) {  //It meens that we are in the last column
+                        if (c==numColumns - 1) {  //It meens that we are in the last column
                             System.out.print("| ");
                             System.out.println(r+1);
                         }
@@ -93,7 +93,7 @@ public class Board  {
                             else
                                 System.out.print(0 + "   ");
                         }
-                        if (c==columns - 1) {  //It meens that we are in the last column
+                        if (c==numColumns - 1) {  //It meens that we are in the last column
                             System.out.print("| ");
                             System.out.println(r+1);
                         }
@@ -101,11 +101,11 @@ public class Board  {
             }
             System.out.println();
         }
-        if (rows==4)
+        if (numRows==4)
             System.out.println(" --------------");//printing the lower line of the frame
-        else if(rows==6)
+        else if(numRows==6)
             System.out.println(" -------------------------");
-        else if(rows==10)
+        else if(numRows==10)
             System.out.println(" -----------------------------------------");
 
     }
@@ -126,7 +126,7 @@ public class Board  {
         String [] parts1,parts2;
         do {
             randRC1 = rnd.nextInt(numRows * numColumns-fixRange);//we get a random number which will be the index of one member
-                                                             //of the linked list.This value is the place in the board we
+                                                             //of the linked list.The value of this member is the place in the board we
                                                            //are going to fill now with the variable val.
             fixRange++;//When one member of the Linkedlist is removed we must reduce the range of the random numbers.
             parts1=linkedlist.get(randRC1).split(",");
@@ -148,17 +148,9 @@ public class Board  {
             val++;
             linkedlist.remove(randRC2);
         }while (!linkedlist.isEmpty());
-        printBoard(numRows,numColumns,-2,1,1,1);
+        printBoard(-2,1,1,1);
     }
-    /*public Boolean isBoardFilled(){
-    int counter=0;
-        for (int r=0;r<numRows;r++) {
-            for (int c = 0; c < numColumns; c++)
-                if (board[r][c].isFilled)
-                    counter++;
-        }
-        return counter==numRows*numColumns;
-    }*/
+
     public Boolean checkFinish(){
         int counter=0;
         for (int r=0;r<numRows;r++) {
@@ -168,7 +160,7 @@ public class Board  {
         }
         return counter == numRows * numColumns;
     }
-    //this method returns the index of the winner in the array
+    //this method returns the highestPoints in the array
     public int checkHighestPoints(int[] points){
          int highestPoints=0;
         for (int point : points) {
