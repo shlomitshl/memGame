@@ -1,25 +1,24 @@
 package memo;
 import java.util.Scanner;
+
 public class Game  {
     public Board board;
     String[] names;
     int[] points;
-    int participants,level;
+    int participants=0;
+    int level=0;
     int row1,column1,row2,column2;
-    boolean exceptionSign=true;
+
     public void startGame() {
         do {
             try {
                 System.out.println("Please enter number of participants(2-5) :");
                 Scanner scan = new Scanner(System.in);
                 participants = scan.nextInt();
-                exceptionSign = false;
             } catch (Exception e) {  //if the input was not an integer we are throwing an exception
                 System.out.println("This is not a number!");
-                System.out.println("Try again...");
             }
-            //}while(exceptionSign);
-        }while(participants<2||participants>5||exceptionSign);   //checking legality of participants number
+        }while(participants<2||participants>5);//checking legality of participants number(2-5)
 
         names = new String[participants];
         points= new int[participants];
@@ -48,17 +47,15 @@ public class Game  {
             System.out.println();
         }
 
-        exceptionSign=true;
         do {
             try {
                 System.out.print("Please enter the number of the level you want to play (1-3): ");
                 Scanner scan = new Scanner(System.in);
                 level = scan.nextInt();
-                exceptionSign = false;
             } catch (Exception e) {
                 System.out.println("This is not a number!");
             }
-        }while(level>3||level<1||exceptionSign);//When all 3 conditions are false we get out of the loop.
+        }while(level>3||level<1);//checking legality of level input
 
         if (level == 1) {
             System.out.println("Geting started...");
@@ -68,7 +65,7 @@ public class Game  {
         } else if (level == 2) {
             System.out.println("Geting started...");
             board=new Board(6,6);
-            board.printBoard(-1,1,1,1);
+            board.printBoard(-1,-1,-1,-1);
             playGame();
         } else {//level==3
             System.out.println("Geting started...");
@@ -77,15 +74,24 @@ public class Game  {
             playGame();
         }
     }
+
     public void playGame(){
         board.fillRandomNumbers();
         int i=0;//The index of participant's name/points in the names/points array.
         boolean card2IsLegal;
+        boolean nameSign=false;
 
         do {
-            System.out.println(names[i] + " it is your turn.");
-            exceptionSign=true;
-            do{
+            if (!nameSign) {//In case the card which was chosen, was already taken, we don't want to print again (..." it is your turn.").
+                System.out.println(names[i] + " it is your turn.");
+            }
+            nameSign=false;//Every loop we have to initialize these variables.
+            row1=-1;
+            column1=-1;
+            row2=-1;
+            column2=-1;
+
+            do{  //In this loop the player is choosing row number of the first card he is choosing.
                 try {
                     System.out.println("Please choose your first card.");
                     System.out.println("Enter row nunmber:");
@@ -94,13 +100,11 @@ public class Game  {
                     if (row1 < 1 || row1 > board.numRows) {
                         System.out.println("This number is out of range (range=1-"+board.numRows+")");
                     }
-                    exceptionSign = false;
                 } catch (Exception e){
                     System.out.println("This is not a number!");
                 }
-            }while (row1 < 1 || row1 > board.numRows || exceptionSign);
-            exceptionSign=true;
-            do {
+            }while (row1 < 1 || row1 > board.numRows );
+            do {  //In this loop the player is choosing column number of the first card he is choosing.
                 try {
                     System.out.println("Enter column nunmber:");
                     Scanner scan = new Scanner(System.in);
@@ -108,18 +112,16 @@ public class Game  {
                     if (column1 < 1 || column1 > board.numColumns) {
                         System.out.println("This number is out of range (range=1-"+board.numColumns+")");
                     }
-                    exceptionSign = false;
                 }catch (Exception e){
                     System.out.println("This is not a number!");
                 }
-            }while(column1 < 1 || column1 > board.numColumns || exceptionSign);
-            if (!board.board[row1 - 1][column1 - 1].isTaken)
+            }while(column1 < 1 || column1 > board.numColumns);
+            if (!board.board[row1 - 1][column1 - 1].isTaken) //Checking if this card wasn't taken yet.
             {
-                //Printing board shoing the first card that was chosen
+                //Printing board showing the first card that was chosen
                 board.printBoard(-3, column1, row1 - 1, column1 - 1);
-                do {
-                    exceptionSign=true;
-                    do {
+                do {//This loop continues until the player chooses second legal card
+                    do {//In this loop the player is choosing row number of the second card he is choosing.
                         try {
                             System.out.println("Please choose your second card.");
                             System.out.println("Enter row nunmber:");
@@ -128,13 +130,11 @@ public class Game  {
                             if (row2 < 1 || row2 > board.numRows) {
                                 System.out.println("This number is out of range (range=1-" + board.numRows+")");
                             }
-                            exceptionSign = false;
                         } catch (Exception e) {
                             System.out.println("This is not a number!");
                         }
-                    }while(row2 < 1 || row2 > board.numRows || exceptionSign);
-                    exceptionSign=true;
-                    do {
+                    }while(row2 < 1 || row2 > board.numRows);
+                    do {//In this loop the player is choosing column number of the second card he is choosing.
                         try {
                             System.out.println("Enter column nunmber:");
                             Scanner scan = new Scanner(System.in);
@@ -142,22 +142,21 @@ public class Game  {
                             if (column2 < 1 || column2 > board.numColumns) {
                                 System.out.println("This number is out of range (range=1-"+board.numColumns+")");
                             }
-                            exceptionSign = false;
                         }catch (Exception e){
                             System.out.println("This is not a number!");
                         }
-                    }while(column2 < 1 || column2 > board.numColumns ||exceptionSign);
-                    if (!board.board[row2 - 1][column2 - 1].isTaken) {
-                        if (!(row1 == row2 && column1 == column2)) {//cheking if it is not the same first choosen card
-                            //prints board with only two choosen cards up.
+                    }while(column2 < 1 || column2 > board.numColumns);
+                    if (!board.board[row2 - 1][column2 - 1].isTaken) {//Checking if this card wasn't taken yet.
+                        if (!(row1 == row2 && column1 == column2)) {//checking if it is not the same first chosen card
+                            //prints board with only two chosen cards up.
                             board.printBoard(row1 - 1, column1 - 1, row2 - 1, column2 - 1);
                             //checking if the chosen cards are equal
                             if (board.board[row1 - 1][column1 - 1].value == board.board[row2 - 1][column2 - 1].value) {
                                 points[i]++;
                                 board.board[row1 - 1][column1 - 1].isTaken = true;
                                 board.board[row2 - 1][column2 - 1].isTaken = true;
-                                if (points[i]==1)
-                                   System.out.println(names[i] + " you have " + points[i] + " point.");
+                                if (points[i] == 1)
+                                    System.out.println(names[i] + " you have one point.");
                                 else
                                     System.out.println(names[i] + " you have " + points[i] + " points.");
                             } else {
@@ -167,30 +166,36 @@ public class Game  {
                                     i = 0;
                                 try {
                                     Thread.sleep(10000);
-                                }
-                                catch (InterruptedException e) {
+                                } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
                             }
-                            card2IsLegal=true;
-                        }else {
+                            card2IsLegal = true;//This takes us out of the loop: while(!card2IsLegal)
+                        } else {
                             System.out.println("This is your first card,");
-                            card2IsLegal=false;
+                            card2IsLegal = false;
+                            row2 = -1;//If we don't initialize it, in another loop row2 can still be in the range, and
+                            column2 = -1;//if there will be an exception we will get out of the loop even though
+                            //we have to stay in it to chose legal card.
                         }
                     } else {
                         System.out.println("This card was already taken");
                         card2IsLegal=false;
+                        row2=-1;
+                        column2=-1;
                     }
 
                 }while(!card2IsLegal);
+
+                board.printBoard(-1,-1,-1,-1);//prints board with 1's & 0's.
             }
             else
             {
                 System.out.println("This card was already taken");
+                nameSign=true;//It means that we have already said who's turn it is and we don't want to say it again,
+                              //in case the first card has to be chosen again.
             }
 
-            board.printBoard(-1,-1,-1,-1);//prints board with 1's&0's
-                                                                                                   //means cards upside down.
         }while(!board.checkFinish());
         System.out.println("Game is over!");
         int highestPoints=board.checkHighestPoints(points);
